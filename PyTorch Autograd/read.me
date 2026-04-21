@@ -1,0 +1,213 @@
+# ⚙️ PyTorch Autograd
+
+**Autograd** is the engine in PyTorch that automatically computes gradients.
+In simple terms:
+
+👉 It answers: *“How does the output change when inputs/parameters change?”*
+👉 This is exactly what we need for **training neural networks**
+
+---
+
+# 🧠 Core Idea (Very Important)
+
+In deep learning, we optimize a function:
+
+[
+Loss = f(parameters)
+]
+
+To minimize loss, we need:
+
+[
+\frac{\partial Loss}{\partial parameters}
+]
+
+👉 Autograd computes these derivatives **automatically using backpropagation**
+
+---
+
+# 🔄 How Autograd Works (Step-by-Step)
+
+### 1. Build Computational Graph
+
+Every operation creates a **node** in a graph.
+
+Example:
+
+```python
+x = torch.tensor(2.0, requires_grad=True)
+y = x * 3
+z = y ** 2
+```
+
+Graph:
+
+```
+x → y → z
+```
+
+---
+
+### 2. Track Operations
+
+* If `requires_grad=True`, PyTorch tracks all operations
+* It remembers **how each value was computed**
+
+---
+
+### 3. Backward Pass (Magic Happens Here)
+
+```python
+z.backward()
+```
+
+👉 Computes:
+[
+\frac{dz}{dx}
+]
+
+Result stored in:
+
+```python
+x.grad
+```
+
+---
+
+# 📌 Simple Example
+
+```python
+import torch
+
+x = torch.tensor(2.0, requires_grad=True)
+
+y = x**2 + 3*x + 1
+y.backward()
+
+print(x.grad)
+```
+
+### What happens mathematically:
+
+[
+y = x^2 + 3x + 1
+]
+
+[
+\frac{dy}{dx} = 2x + 3
+]
+
+At (x = 2):
+
+[
+2(2) + 3 = 7
+]
+
+👉 Output:
+
+```
+tensor(7.)
+```
+
+---
+
+# 🔑 Key Concepts You MUST Understand
+
+## 1. `requires_grad`
+
+* Enables gradient tracking
+
+```python
+x = torch.tensor(1.0, requires_grad=True)
+```
+
+---
+
+## 2. `.grad`
+
+* Stores computed gradients
+
+---
+
+## 3. `.backward()`
+
+* Triggers backpropagation
+
+---
+
+## 4. Computational Graph
+
+* Dynamic (built on-the-fly)
+* This is why PyTorch is flexible
+
+---
+
+## ⚠️ Important: Gradient Accumulation
+
+PyTorch **adds gradients** instead of replacing them.
+
+```python
+y.backward()
+y.backward()
+```
+
+👉 Gradients will be **accumulated**
+
+So always reset:
+
+```python
+optimizer.zero_grad()
+```
+
+---
+
+# 🚀 Why Autograd is Powerful
+
+Without autograd:
+
+* You’d manually compute derivatives ❌
+* Extremely complex for deep networks ❌
+
+With autograd:
+
+* Automatic differentiation ✅
+* Works for any complex model ✅
+* Saves time and errors ✅
+
+---
+
+# 🧪 Real Use in Training Loop
+
+```python
+for data, target in loader:
+    output = model(data)
+    loss = criterion(output, target)
+    
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+```
+
+👉 This is where autograd is actually used
+
+---
+
+# 🧠 Intuition (Don’t Skip This)
+
+Think of autograd like:
+
+> “A system that watches everything you do in forward pass
+> and then walks backward to calculate impact of each step.”
+
+---
+
+# 🎯 Final Understanding
+
+If you truly understand Autograd, you understand:
+
+* Backpropagation
+* Gradient flow
+* How neural networks learn
+
+---
+
